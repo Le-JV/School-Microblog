@@ -3,14 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AA66876A-3A2F-4E38-A86C-41B145750245}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8585157E-152B-42F2-BC37-B5DB1923BF5F}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microblog", "src\Microblog\Microblog.xproj", "{6C65878D-29F6-405C-9DAD-34748B7CBE43}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microblog", "src/Microblog/Microblog.xproj", "{20825278-AEBE-44A9-B1CB-D30E29A3D8AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,15 +11,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6C65878D-29F6-405C-9DAD-34748B7CBE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C65878D-29F6-405C-9DAD-34748B7CBE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C65878D-29F6-405C-9DAD-34748B7CBE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C65878D-29F6-405C-9DAD-34748B7CBE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20825278-AEBE-44A9-B1CB-D30E29A3D8AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20825278-AEBE-44A9-B1CB-D30E29A3D8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20825278-AEBE-44A9-B1CB-D30E29A3D8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20825278-AEBE-44A9-B1CB-D30E29A3D8AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{6C65878D-29F6-405C-9DAD-34748B7CBE43} = {AA66876A-3A2F-4E38-A86C-41B145750245}
 	EndGlobalSection
 EndGlobal

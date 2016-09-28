@@ -32,9 +32,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">Login</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Register</a></li>
                 </ul>
+                @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </div>
@@ -42,7 +41,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2016 - Jeroen van Schooten</p>
+            <p>&copy; 2016 - Microblog</p>
         </footer>
     </div>
 

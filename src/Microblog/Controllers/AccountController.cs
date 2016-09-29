@@ -65,10 +65,6 @@ namespace Microblog.Controllers
                     _logger.LogInformation(1, "User logged in.");
                     return RedirectToLocal(returnUrl);
                 }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning(2, "User account locked out.");

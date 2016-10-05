@@ -7,22 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microblog.Data;
 using Microblog.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Microblog.Controllers
 {
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, 
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;    
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Post.ToListAsync());
+            // Get list of my posts.
+            var user = await GetCurrentUserAsync();
+            return View(_context.Post.Where(m => m.User == user));
         }
 
         // GET: Posts/Details/5
@@ -53,10 +63,19 @@ namespace Microblog.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Content,PostDate,Title")] Post post)
+        public async Task<IActionResult> Create([Bind("ID,Content,Title,Public")] Post post)
         {
             if (ModelState.IsValid)
             {
+                // Amazingly, entity framework automatically makes the translation from ApplicationUser to it's UserID.
+                post.User = await GetCurrentUserAsync();
+
+                // Current DateTime on the machine (server).
+                post.PostDate = DateTime.Now;
+
+                // Generate excerpt of the content to show in the overview list.
+                post.Excerpt = post.Content.Substring(0, 144);
+
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -77,6 +96,7 @@ namespace Microblog.Controllers
             {
                 return NotFound();
             }
+
             return View(post);
         }
 
@@ -146,6 +166,11 @@ namespace Microblog.Controllers
         private bool PostExists(int id)
         {
             return _context.Post.Any(e => e.ID == id);
+        }
+
+        private Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return _userManager.GetUserAsync(HttpContext.User);
         }
     }
 }

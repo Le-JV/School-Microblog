@@ -4,33 +4,15 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+@inject UserManager<ApplicationUser> UserManager
 
 <div>
-    <h4>Post</h4>
+    <h3>@Html.DisplayFor(model => model.Title)</h3>
+    <p>Date: @Html.DisplayFor(model => model.PostDate)</p>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PostDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PostDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
+    <pre>@Html.DisplayFor(model => model.Content)</pre>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back</a>
 </div>

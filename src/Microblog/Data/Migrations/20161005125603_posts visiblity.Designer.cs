@@ -8,9 +8,10 @@ using Microblog.Data;
 namespace Microblog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161005125603_posts visiblity")]
+    partial class postsvisiblity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -71,8 +72,6 @@ namespace Microblog.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Content");
-
-                    b.Property<string>("Excerpt");
 
                     b.Property<DateTime>("PostDate");
 

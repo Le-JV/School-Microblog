@@ -43,7 +43,9 @@ namespace Microblog.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post.SingleOrDefaultAsync(m => m.ID == id);
+            // No lazy loading in EF7 yet, use eager loading by using Include manually.
+            var post = await _context.Post.Include(u => u.User).SingleOrDefaultAsync(m => m.ID == id);
+
             if (post == null)
             {
                 return NotFound();
@@ -159,6 +161,17 @@ namespace Microblog.Controllers
         {
             var post = await _context.Post.SingleOrDefaultAsync(m => m.ID == id);
             _context.Post.Remove(post);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        // POST: Posts/Toggle/5
+        [HttpPost, ActionName("Toggle")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Toggle(int id)
+        {
+            var post = await _context.Post.SingleOrDefaultAsync(m => m.ID == id);
+            post.Public = !post.Public;
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

@@ -8,6 +8,7 @@
 
 <div>
     <h3>@Html.DisplayFor(model => model.Title)</h3>
+    <p>By: @Html.DisplayFor(model => model.User.Email)</p>
     <p>Date: @Html.DisplayFor(model => model.PostDate)</p>
     <hr />
     <pre>@Html.DisplayFor(model => model.Content)</pre>

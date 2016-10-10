@@ -8,9 +8,10 @@ using Microblog.Data;
 namespace Microblog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161010174002_added comments")]
+    partial class addedcomments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -225,7 +226,7 @@ namespace Microblog.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.HasOne("Microblog.Models.Post", "post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("postID");
                 });
 

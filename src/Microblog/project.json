@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-Microblog-898b5acb-29d6-493d-b56b-454bea85da1c",
 
   "dependencies": {
@@ -41,10 +41,11 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc":  {
-      "version": "1.0.0-preview2-final",
-      "type": "build"
-    }
+    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
+        "version": "1.0.0-preview2-final",
+        "type": "build"
+    },
+    "TagHelperSamples.Markdown": "1.1.1"
   },
 
   "tools": {

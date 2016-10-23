@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Microblog.Controllers
 {
+    // ASP Core & EF conventions seem to do a lot of the CRUD work on the controller level instead of in a model.
+    // https://docs.asp.net/en/latest/data/ef-mvc/crud.html
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,7 +46,10 @@ namespace Microblog.Controllers
             }
 
             // No lazy loading in EF7 yet, use eager loading by using Include manually.
-            var post = await _context.Post.Include(u => u.User).SingleOrDefaultAsync(m => m.ID == id);
+            var post = await _context.Post.
+                Include(u => u.User).
+                Include(c => c.Comments).ThenInclude(comment => comment.User).
+                SingleOrDefaultAsync(m => m.ID == id);
 
             if (post == null)
             {
@@ -72,11 +77,13 @@ namespace Microblog.Controllers
                 // Amazingly, entity framework automatically makes the translation from ApplicationUser to it's UserID.
                 post.User = await GetCurrentUserAsync();
 
+                await _userManager.AddToRoleAsync(post.User, "Admin");
+
                 // Current DateTime on the machine (server).
                 post.PostDate = DateTime.Now;
 
                 // Generate excerpt of the content to show in the overview list.
-                post.Excerpt = post.Content.Substring(0, 144);
+                post.Excerpt = post.Content.Substring(0, (post.Content.Length < 144 ? post.Content.Length : 144));
 
                 _context.Add(post);
                 await _context.SaveChangesAsync();

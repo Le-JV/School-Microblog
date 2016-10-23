@@ -1,0 +1,18 @@
+﻿@model Microblog.Models.CommentsViewModels.CommentFormViewModel
+
+<form asp-controller="Comments" asp-action="Create/@Html.Encode(ViewData["Post"])">
+    <div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <div>
+                <textarea asp-for="Content " class="form-control" rows="10" cols="40"></textarea>
+                <span asp-for="Content" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <input type="submit" value="Post" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>

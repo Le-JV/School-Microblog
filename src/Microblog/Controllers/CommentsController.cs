@@ -7,16 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microblog.Data;
 using Microblog.Models;
+using Microblog.Models.CommentsViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Microblog.Controllers
 {
+    [Authorize]
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
-            _context = context;    
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
         }
 
         // GET: Comments
@@ -42,26 +52,28 @@ namespace Microblog.Controllers
             return View(comment);
         }
 
-        // GET: Comments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        // POST: Comments/Create/5
+        [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Content,PostDate")] Comment comment)
+        public async Task<IActionResult> Create(int id, CommentFormViewModel commentFormViewModel)
         {
+            Comment comment = new Comment();
             if (ModelState.IsValid)
             {
+                comment.Content = commentFormViewModel.Content;
+                comment.User = await GetCurrentUserAsync();
+                comment.PostDate = DateTime.Now;
+
+                // Need to fix this, isnt properly passing post ID now.
+                comment.Post = _context.Post.SingleOrDefault(p => p.ID == id);
+
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details/" + comment.Post.ID, "Posts");
             }
-            return View(comment);
+            return NotFound();
         }
 
         // GET: Comments/Edit/5
@@ -146,6 +158,11 @@ namespace Microblog.Controllers
         private bool CommentExists(int id)
         {
             return _context.Comment.Any(e => e.ID == id);
+        }
+
+        private Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return _userManager.GetUserAsync(HttpContext.User);
         }
     }
 }

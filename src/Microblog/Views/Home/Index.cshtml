@@ -1,7 +1,63 @@
-﻿@{
+﻿@model IEnumerable<Microblog.Models.Post>
+@using Microsoft.AspNetCore.Identity
+@using Microblog.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
     ViewData["Title"] = "Microblog";
 }
 
-<h1>Welcome</h1>
+<h1>Welcome @UserManager.GetUserName(User)!</h1>
 
-<p>To see posts specific to your interests, please <a asp-controller="Account" asp-action="Login">log in</a>, or <a asp-controller="Account" asp-action="Register">register</a> an account!</p>
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>Displayed below are posts that are related to your interests. You can change your interests from the <a asp-controller="Manage" asp-action="Index">manage</a> menu!</p>
+}
+else
+{
+    <p>To see posts specific to your interests, please <a asp-controller="Account" asp-action="Login">log in</a>, or <a asp-controller="Account" asp-action="Register">register</a> an account!</p>
+}
+
+<h3>Recent posts</h3>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Excerpt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Excerpt)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

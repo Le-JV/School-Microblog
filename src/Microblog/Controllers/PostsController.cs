@@ -77,8 +77,6 @@ namespace Microblog.Controllers
                 // Amazingly, entity framework automatically makes the translation from ApplicationUser to it's UserID.
                 post.User = await GetCurrentUserAsync();
 
-                await _userManager.AddToRoleAsync(post.User, "Admin");
-
                 // Current DateTime on the machine (server).
                 post.PostDate = DateTime.Now;
 

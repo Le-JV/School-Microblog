@@ -20,8 +20,14 @@ else
     <p>To see posts specific to your interests, please <a asp-controller="Account" asp-action="Login">log in</a>, or <a asp-controller="Account" asp-action="Register">register</a> an account!</p>
 }
 
-<h3>Recent posts</h3>
+<h3>@ViewData["Header"]</h3>
 <hr />
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    <input type="text" name="search" />
+    <input type="submit" value="Search" class="btn btn-default" />
+}
 
 <table class="table">
     <thead>

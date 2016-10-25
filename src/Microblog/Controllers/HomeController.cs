@@ -17,11 +17,32 @@ namespace Microblog.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
         {
-            // Only display posts that are public.
-            return View(await _context.Post.Include(u => u.User).Where(p => p.Public == true).ToListAsync());
+            // Set up default query.
+            var result = from p in _context.Post
+                         select p;
+
+            ViewData["Header"] = "Recent posts";
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                result = result.Where(s => s.Title.Contains(search));
+                ViewData["Header"] = "Search results";
+            }
+
+            return View(await result.Include(u => u.User).Where(p => p.Public == true).ToListAsync());
         }
+
+        // GET: Posts/Search
+        /*public async Task<IActionResult> (string search)
+        {
+            if(String.IsNullOrEmpty(search))
+                return View("Error");
+
+            return View(await _context.Post.Where(s => s.Title.Contains(search)).ToListAsync());
+        }*/
 
         public IActionResult Error()
         {

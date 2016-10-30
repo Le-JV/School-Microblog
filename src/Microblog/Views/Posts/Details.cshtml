@@ -6,6 +6,13 @@
 }
 
 <div>
+    @{
+        string message = TempData["Message"] as string;
+        if (message != null)
+        {
+            <p style="color:green">@message</p>
+        }
+    }
     <h3>@Html.DisplayFor(model => model.Title)</h3>
     <p>By: @Html.DisplayFor(model => model.User.Email)</p>
     <p>Date: @Html.DisplayFor(model => model.PostDate)</p>

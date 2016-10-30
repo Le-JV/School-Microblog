@@ -8,43 +8,14 @@ using Microblog.Data;
 namespace Microblog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161029182325_interest")]
+    partial class interest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Microblog.Data.PostInterests", b =>
-                {
-                    b.Property<int>("PostId");
-
-                    b.Property<int>("InterestId");
-
-                    b.HasKey("PostId", "InterestId");
-
-                    b.HasIndex("InterestId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("PostInterests");
-                });
-
-            modelBuilder.Entity("Microblog.Data.UserInterests", b =>
-                {
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<int>("InterestId");
-
-                    b.HasKey("ApplicationUserId", "InterestId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("InterestId");
-
-                    b.ToTable("UserInterests");
-                });
 
             modelBuilder.Entity("Microblog.Models.ApplicationUser", b =>
                 {
@@ -123,9 +94,17 @@ namespace Microblog.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<string>("Name");
 
+                    b.Property<int?>("PostID");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PostID");
 
                     b.ToTable("Interest");
                 });
@@ -263,32 +242,6 @@ namespace Microblog.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Microblog.Data.PostInterests", b =>
-                {
-                    b.HasOne("Microblog.Models.Interest", "Interest")
-                        .WithMany("PostInterests")
-                        .HasForeignKey("InterestId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Microblog.Models.Post", "Post")
-                        .WithMany("PostInterests")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microblog.Data.UserInterests", b =>
-                {
-                    b.HasOne("Microblog.Models.ApplicationUser", "User")
-                        .WithMany("UserInterests")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Microblog.Models.Interest", "Interest")
-                        .WithMany("UserInterests")
-                        .HasForeignKey("InterestId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Microblog.Models.Comment", b =>
                 {
                     b.HasOne("Microblog.Models.Post", "Post")
@@ -298,6 +251,17 @@ namespace Microblog.Data.Migrations
                     b.HasOne("Microblog.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Microblog.Models.Interest", b =>
+                {
+                    b.HasOne("Microblog.Models.ApplicationUser")
+                        .WithMany("Interests")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Microblog.Models.Post")
+                        .WithMany("Interests")
+                        .HasForeignKey("PostID");
                 });
 
             modelBuilder.Entity("Microblog.Models.Post", b =>

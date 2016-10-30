@@ -62,15 +62,23 @@ namespace Microblog.Controllers
             Comment comment = new Comment();
             if (ModelState.IsValid)
             {
-                comment.Content = commentFormViewModel.Content;
                 comment.User = await GetCurrentUserAsync();
-                comment.PostDate = DateTime.Now;
-
-                // Need to fix this, isnt properly passing post ID now.
                 comment.Post = _context.Post.SingleOrDefault(p => p.ID == id);
 
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
+                if (_context.Post.Count(u => u.User == comment.User) >= 1)
+                {
+
+                    comment.Content = commentFormViewModel.Content;
+                    comment.PostDate = DateTime.Now;
+
+                    _context.Add(comment);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Message"] = "Comment posted!";
+                }
+                else
+                    TempData["Message"] = "You need at least 1 blogpost of your own before you can post a comment!";
+
                 return RedirectToAction("Details/" + comment.Post.ID, "Posts");
             }
             return NotFound();

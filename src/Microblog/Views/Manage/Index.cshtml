@@ -23,7 +23,21 @@
         </dd>
         <dt>Interests:</dt>
         <dd>
+            @foreach (var interest in Model.Interests)
+            {
+                @Html.DisplayFor(i => interest.Interest.Name)
+                @if (interest != Model.Interests.Last())
+                {
+                    @Html.Encode(", ")
+                }
+            }
 
+            @using (Html.BeginForm("ChangeInterest", "Manage", FormMethod.Post))
+            {
+                <select asp-items="@Model.InterestsList" name="interest"></select>
+                <input type="submit" value="Add" name="type" class="btn btn-default" />
+                <input type="submit" value="Remove" name="type" class="btn btn-default" />
+            }
         </dd>
     </dl>
 </div>

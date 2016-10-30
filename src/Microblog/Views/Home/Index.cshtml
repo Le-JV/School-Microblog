@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Microblog.Models.Post>
+﻿@model Microblog.Models.HomeViewModels.HomeViewModel
 @using Microsoft.AspNetCore.Identity
 @using Microblog.Models
 
@@ -20,35 +20,42 @@ else
     <p>To see posts specific to your interests, please <a asp-controller="Account" asp-action="Login">log in</a>, or <a asp-controller="Account" asp-action="Register">register</a> an account!</p>
 }
 
-<h3>@ViewData["Header"]</h3>
+<h3>@Model.Title</h3>
 <hr />
 
+<p>Use @Html.Encode('@')username to search for posts by a specific user.</p>
 @using (Html.BeginForm("Index", "Home", FormMethod.Get))
 {
-    <input type="text" name="search" />
-    <input type="submit" value="Search" class="btn btn-default" />
+    <input type="text" name="search" value="@Model.SearchTerm" />
+    @Html.Encode("Filter by: ")<select asp-items="@Model.InterestsList" name="interest">
+        <option selected="selected" value="0">All</option>
+    </select>
+    <input type="submit" name="all" value="Search" class="btn btn-default" />
 }
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.EmptyPost.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.EmptyPost.User)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PostDate)
+                @Html.DisplayNameFor(model => model.EmptyPost.PostDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Excerpt)
+                @Html.DisplayNameFor(model => model.EmptyPost.Excerpt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmptyPost.PostInterests)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.PostsList)
         {
             <tr>
                 <td>
@@ -62,6 +69,19 @@ else
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Excerpt)
+                </td>
+                <td>
+                    @foreach (var interest in item.PostInterests)
+                    {
+                        @Html.DisplayFor(i => interest.Interest.Name)
+                        @if (interest != item.PostInterests.Last())
+                        {
+                            @Html.Encode(", ")
+                        }
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.ID">Read more...</a> |
                 </td>
             </tr>
         }

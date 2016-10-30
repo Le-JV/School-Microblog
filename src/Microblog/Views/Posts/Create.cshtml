@@ -1,4 +1,4 @@
-@model Microblog.Models.Post
+@model Microblog.Models.PostViewModels.PostViewModel
 
 @{
     ViewData["Title"] = "Create a new post!";
@@ -29,6 +29,13 @@
             <div class="col-md-10">
                 @Html.CheckBox("Public", true)
                 <span asp-validation-for="Public" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="InterestsList" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="InterestIds" multiple="multiple" asp-items="@Model.InterestsList"></select>
+                <span asp-validation-for="InterestsList" class="text-danger" />
             </div>
         </div>
         <div class="form-group">

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Microblog.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Admin - List of users";
+}
+
+<h2>Users</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    <form asp-action="Promote/@Html.Encode(item.Id)">
+                        <div class="form-actions">
+                            <input type="submit" value="Make Admin" class="btn btn-default" /> |
+                        </div>
+                    </form>
+                    <a asp-action="Posts" asp-route-id="@item.Id">Posts</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

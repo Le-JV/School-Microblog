@@ -13,6 +13,7 @@ using Microblog.Data;
 using Microblog.Models;
 using Microblog.Services;
 using Microsoft.AspNetCore.Identity;
+using Microblog.Helpers;
 
 namespace Microblog
 {
@@ -55,6 +56,8 @@ namespace Microblog
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -62,7 +65,7 @@ namespace Microblog
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, RoleManager<IdentityRole> roleManager, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, RoleManager<IdentityRole> roleManager, IHostingEnvironment env, ILoggerFactory loggerFactory, ApplicationDbContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -81,10 +84,9 @@ namespace Microblog
             }
 
             app.UseApplicationInsightsExceptionTelemetry();
-
             app.UseStaticFiles();
-
             app.UseIdentity();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
@@ -92,6 +94,8 @@ namespace Microblog
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            DbInitializer.Initialize(context);
 
             https://stackoverflow.com/questions/19697226/creating-roles-in-asp-net-identity-mvc-5/34381864#34381864
             var e = await roleManager.RoleExistsAsync("Admin");

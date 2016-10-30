@@ -1,14 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microblog.Data;
 using Microblog.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microblog.Models.PostViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Microblog.Controllers
 {
@@ -34,7 +33,9 @@ namespace Microblog.Controllers
         {
             // Get list of my posts.
             var user = await GetCurrentUserAsync();
-            return View(_context.Post.Where(m => m.User == user));
+            return View(_context.Post.
+                Include(p => p.PostInterests).ThenInclude(s => s.Interest).
+                Where(m => m.User == user));
         }
 
         // GET: Posts/Details/5
@@ -48,7 +49,8 @@ namespace Microblog.Controllers
             // No lazy loading in EF7 yet, use eager loading by using Include manually.
             var post = await _context.Post.
                 Include(u => u.User).
-                Include(c => c.Comments).ThenInclude(comment => comment.User).
+                Include(c => c.Comments).ThenInclude(ca => ca.User).
+                Include(p => p.PostInterests).ThenInclude(s => s.Interest).
                 SingleOrDefaultAsync(m => m.ID == id);
 
             if (post == null)
@@ -62,7 +64,13 @@ namespace Microblog.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            return View();
+            var interests = _context.Interest.OrderBy(c => c.Name).Select(x => new { Id = x.ID, Value = x.Name });
+
+            var model = new PostViewModel()
+            {
+                InterestsList = new SelectList(interests, "Id", "Value")
+            };
+            return View(model);
         }
 
         // POST: Posts/Create
@@ -70,10 +78,15 @@ namespace Microblog.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Content,Title,Public")] Post post)
+        public async Task<IActionResult> Create(PostViewModel postViewModel)
         {
+            Post post = new Post();
             if (ModelState.IsValid)
             {
+                post.Title = postViewModel.Title;
+                post.Content = postViewModel.Content;
+                post.Public = postViewModel.Public;
+
                 // Amazingly, entity framework automatically makes the translation from ApplicationUser to it's UserID.
                 post.User = await GetCurrentUserAsync();
 
@@ -84,6 +97,14 @@ namespace Microblog.Controllers
                 post.Excerpt = post.Content.Substring(0, (post.Content.Length < 144 ? post.Content.Length : 144));
 
                 _context.Add(post);
+                await _context.SaveChangesAsync();
+
+                foreach (var i in postViewModel.InterestIds)
+                {
+                    var pi = new PostInterests { InterestId = i, PostId = post.ID };
+                    _context.PostInterests.Add(pi);
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -165,6 +186,7 @@ namespace Microblog.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var post = await _context.Post.SingleOrDefaultAsync(m => m.ID == id);
+            _context.Comment.RemoveRange(_context.Comment.Where(p => p.Post == post)); // Remove comments first, to avoid FK constraint error.
             _context.Post.Remove(post);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

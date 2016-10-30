@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microblog.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,6 +26,8 @@ namespace Microblog.Models
         [Display(Name = "By")]
         public ApplicationUser User { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<Interest> Interests { get; set; }
+
+        [Display(Name = "Interests")]
+        public ICollection<PostInterests> PostInterests { get; set; }
     }
 }

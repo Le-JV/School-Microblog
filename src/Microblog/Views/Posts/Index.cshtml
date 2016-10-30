@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Excerpt)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostInterests)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,13 +46,23 @@
                 @Html.DisplayFor(modelItem => item.Excerpt)
             </td>
             <td>
+                @foreach (var interest in item.PostInterests)
+                {
+                    @Html.DisplayFor(i => interest.Interest.Name)
+                    @if (interest != item.PostInterests.Last())
+                    {
+                        @Html.Encode(", ")
+                    }
+                }
+            </td>
+            <td>
                 <form asp-action="Toggle/@Html.Encode(item.ID)">
                     <div class="form-actions">
                         <input type="submit" value="Public" class="btn btn-default" style="background-color:@(item.Public ? "green" : "red")"/> |
                     </div>
                 </form>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Read</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>

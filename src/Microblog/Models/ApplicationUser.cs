@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microblog.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Microblog.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<Interest> Interests { get; set; }
+        [Display(Name = "Interests")]
+        public ICollection<UserInterests> UserInterests { get; set; }
     }
 }
